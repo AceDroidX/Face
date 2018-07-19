@@ -24,6 +24,9 @@
             android:name="API_Secret"
             android:value="${API_Secret}"/>
         <meta-data
+            android:name="outer_id"
+            android:value="${outer_id}"/>
+        <meta-data
             android:name="Website"
             android:value="https://acedroidx.github.io/?a=face" />
         <activity android:name=".MainActivity"

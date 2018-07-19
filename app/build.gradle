@@ -35,7 +35,7 @@ android {
         }
         debug {
             signingConfig signingConfigs.wxxKeystore
-            manifestPlaceholders = [API_key: keystoreProperties['API_key'], API_Secret: keystoreProperties['API_Secret']]
+            manifestPlaceholders = [API_key: keystoreProperties['API_key'], API_Secret: keystoreProperties['API_Secret'],outer_id:keystoreProperties['outer_id']]
         }
     }
 }

@@ -27,8 +27,8 @@ import javax.net.ssl.SSLException;
 /**
  * Created by AceDroidX on 2018/7/19 0:30.
  */
-public class FaceTest {
-    public void main(final UploadActivity activity, String FILENAME,String key,String secret) throws Exception {//face++官方演示
+public class FaceBase {
+    public void main(final UploadActivity activity, String FILENAME,String key,String secret) {//face++官方演示
         String dir = activity.getCacheDir().toString() + "/" + FILENAME;
         File file = new File(dir);
         byte[] buff = getBytesFromFile(file);
@@ -70,7 +70,6 @@ public class FaceTest {
                 }
             }
         }.start();
-
     }
 
     private final static int CONNECT_TIME_OUT = 30000;
@@ -113,6 +112,58 @@ public class FaceTest {
                 obos.write(fileEntry.getValue());
                 obos.writeBytes("\r\n");
             }
+        }
+        obos.writeBytes("--" + boundaryString + "--" + "\r\n");
+        obos.writeBytes("\r\n");
+        obos.flush();
+        obos.close();
+        InputStream ins = null;
+        int code = conne.getResponseCode();
+        try {
+            if (code == 200) {
+                ins = conne.getInputStream();
+            } else {
+                ins = conne.getErrorStream();
+            }
+        } catch (SSLException e) {
+            e.printStackTrace();
+            return new byte[0];
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buff = new byte[4096];
+        int len;
+        while ((len = ins.read(buff)) != -1) {
+            baos.write(buff, 0, len);
+        }
+        byte[] bytes = baos.toByteArray();
+        ins.close();
+        return bytes;
+    }
+
+    protected static byte[] post(String url, HashMap<String, String> map) throws Exception {
+        HttpURLConnection conne;
+        URL url1 = new URL(url);
+        conne = (HttpURLConnection) url1.openConnection();
+        conne.setDoOutput(true);
+        conne.setUseCaches(false);
+        conne.setRequestMethod("POST");
+        conne.setConnectTimeout(CONNECT_TIME_OUT);
+        conne.setReadTimeout(READ_OUT_TIME);
+        conne.setRequestProperty("accept", "*/*");
+        conne.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundaryString);
+        conne.setRequestProperty("connection", "Keep-Alive");
+        conne.setRequestProperty("user-agent", "Mozilla/4.0 (compatible;MSIE 6.0;Windows NT 5.1;SV1)");
+        DataOutputStream obos = new DataOutputStream(conne.getOutputStream());
+        Iterator iter = map.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String, String> entry = (Map.Entry) iter.next();
+            String key = entry.getKey();
+            String value = entry.getValue();
+            obos.writeBytes("--" + boundaryString + "\r\n");
+            obos.writeBytes("Content-Disposition: form-data; name=\"" + key
+                    + "\"\r\n");
+            obos.writeBytes("\r\n");
+            obos.writeBytes(value + "\r\n");
         }
         obos.writeBytes("--" + boundaryString + "--" + "\r\n");
         obos.writeBytes("\r\n");

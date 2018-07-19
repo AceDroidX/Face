@@ -41,6 +41,21 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="加入脸集" />
+
+                <Button
+                    android:id="@+id/setid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="设置id" />
+
+                <EditText
+                    android:id="@+id/editText"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
             </LinearLayout>
 
             <TextView
